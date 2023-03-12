@@ -1,54 +1,33 @@
-class Swordsman:
+import game
+import pygame
+import pygame_menu
 
-    def __init__(self, n, h, l, s):
-        self.name = n
-        self.health = h
-        self.live = l
-        self.status = s
-        print("Появился новый мечник с именем: ", self.name)
+pygame.init()
+surface = pygame.display.set_mode((600, 400))
 
-    def eating(self, count):
-        print(f"{self.name} кушает количество жизней увеличенно")
-        self.health += count
-        if self.health >= 80:
-            print(f"{self.name} наелся. Количество жизней увеличилось.")
-            self.live += 1
-            self.health = 40
+def set_difficulty(value, difficulty):
+    # Do the job here !
+    pass
 
-    def training(self, count):
-        print(f"{self.name} тренеруется")
-        self.status += count
+def show_scoreboard():
+    global menu
+    menu.clear()
+    with open('scoreboard.txt', 'r') as file:
+        text = file.read()
+        menu.add.label(text, max_char=-1, font_size = 20)
 
-    def fighting(self, count):
-        print(f"{self.name} начал драку с противником у которого {count} жизней")
-        p1 = input("Выберете атаку (Удар мечём, Вихрь из мечей, Три меча, Моментальный меч: ")
-        while count > 0:
-            if p1 == "Удар мечём":
-                count -= (5 + self.status)
-                print("Атака прошла -", 5 + self.status)
-            elif p1 == "Вихрь из мечей":
-                count -= (10 + self.status)
-                print("Атака прошла -", 10 + self.status)
-            elif p1 == "Три меча":
-                count -= (30 + self.status)
-                print("Атака прошла -", 30 + self.status)
-            elif p1 == "Моментальный меч":
-                count -= (20 + self.status)
-                print("Атака прошла -", 20 + self.status)
-            else:
-                print("Такой атаки нет!")
-
-            if count <= 0:
-                print("Зоро победил!")
-            p1 = input("Выберете атаку (Удар мечём, Вихрь из мечей, Три меча, Моментальный меч: ")
+def start_the_game():
+    myGame = game.game()
+    myGame.play()
 
 
-    def info(self):
-        print(f"Здоровье: {self.health}")
-        print(f"Жизней: {self.live}")
-        print(f"Имя: {self.name}")
-        print(f"Статус меча: {self.status}")
+menu = pygame_menu.Menu('Welcome', 600, 400,
+                       theme=pygame_menu.themes.THEME_BLUE)
 
-Zoro = Swordsman("Зоро", 40, 3, 10)
+menu.add.text_input('Name :', default='John Doe')
+menu.add.selector('Difficulty :', [('Hard', 1), ('Easy', 2)], onchange=set_difficulty)
+menu.add.button('Play', start_the_game)
+menu.add.button('Scoreboard', show_scoreboard)
+menu.add.button('Quit', pygame_menu.events.EXIT)
 
-
+menu.mainloop(surface)
